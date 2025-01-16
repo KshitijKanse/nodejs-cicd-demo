@@ -1,0 +1,86 @@
+{
+    "pipeline": {
+        "name": "nodejs-app-pipeline",
+        "roleArn": "arn:aws:iam::YOUR_ACCOUNT_ID:role/CodePipelineServiceRole",
+        "artifactStore": {
+            "type": "S3",
+            "location": "your-artifact-bucket"
+        },
+        "stages": [
+            {
+                "name": "Source",
+                "actions": [
+                    {
+                        "name": "Source",
+                        "actionTypeId": {
+                            "category": "Source",
+                            "owner": "AWS",
+                            "provider": "CodeStarSourceConnection",
+                            "version": "1"
+                        },
+                        "configuration": {
+                            "ConnectionArn": "arn:aws:codestar-connections:region:YOUR_ACCOUNT_ID:connection/your-connection-id",
+                            "FullRepositoryId": "your-username/nodejs-cicd-demo",
+                            "BranchName": "main"
+                        },
+                        "outputArtifacts": [
+                            {
+                                "name": "SourceCode"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Build",
+                "actions": [
+                    {
+                        "name": "Build",
+                        "actionTypeId": {
+                            "category": "Build",
+                            "owner": "AWS",
+                            "provider": "CodeBuild",
+                            "version": "1"
+                        },
+                        "configuration": {
+                            "ProjectName": "nodejs-app-build"
+                        },
+                        "inputArtifacts": [
+                            {
+                                "name": "SourceCode"
+                            }
+                        ],
+                        "outputArtifacts": [
+                            {
+                                "name": "BuildOutput"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Deploy",
+                "actions": [
+                    {
+                        "name": "Deploy",
+                        "actionTypeId": {
+                            "category": "Deploy",
+                            "owner": "AWS",
+                            "provider": "CodeDeploy",
+                            "version": "1"
+                        },
+                        "configuration": {
+                            "ApplicationName": "nodejs-app",
+                            "DeploymentGroupName": "nodejs-app-deployment"
+                        },
+                        "inputArtifacts": [
+                            {
+                                "name": "BuildOutput"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
