@@ -1,7 +1,7 @@
 {
     "pipeline": {
         "name": "nodejs-app-pipeline",
-        "roleArn": "arn:aws:iam::YOUR_ACCOUNT_ID:role/CodePipelineServiceRole",
+        "roleArn": "arn:aws:iam::651706781987/CodePipelineServiceRole",
         "artifactStore": {
             "type": "S3",
             "location": "your-artifact-bucket"
